@@ -1,7 +1,7 @@
 /**
  * @param { String } text
  */
-function* say(text) {
+function* splitter(text) {
     if(!(typeof text === "string")){
         throw new Error("uuff")
     }
@@ -9,4 +9,4 @@ function* say(text) {
         yield text.split()[i]
     }
 }
-exports.say = say
+exports.splitter = splitter
