@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     <script src="./index.js"></script>
     <script>
-        // Code
+        ;(() => {
+            let b = document.querySelector("body"),
+                bs = b.style;
+            bs.color = "#fff"
+            bs.background = "#333"
+            bs.height = "100vh"
+            bs.display = "flex"
+            bs.justifyContent = b.style.alignItems = "center"
+            bs.fontSize = "5em"
+            bs.fontFamily = "Roboto"
+            bs.margin = b.style.padding = "0"
+            b.innerHTML = "#CODE"
+        })();
     </script>
 </body>
+
 </html>

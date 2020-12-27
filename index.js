@@ -8,10 +8,10 @@ const Tools = (() => {
         /**
          * @param { any[] } arr
          */
-        constructor(arr) {
-            this.#arr = arr || new Array()
+        constructor(...arr) {
             this.result = new Array()
             this.#event = Tools.#arr_to_object(Tools.#event_names)
+            this.arr = arr || new Array()
         }
         //#endregion
 
@@ -89,8 +89,9 @@ const Tools = (() => {
         }
         sort() {
             let self = _getSelf()
-            let arrs = self.#arr_to_object(self.#arr_types, { before: "_" }, new Array())
+            let arrs = self.#arr_to_object(self.#arr_types, { before: "_" }, () => { return new Array() })
             let result = new Array()
+
             for (let i = 0; i < this.arr.length; i++) {
                 arrs["_" + self.type(this.arr[i])].push(this.arr[i])
             }
@@ -103,6 +104,7 @@ const Tools = (() => {
                 }
 
             }
+
             this.result = result
             return this
         }
@@ -112,7 +114,7 @@ const Tools = (() => {
         static forEach = (arr = [], callback = _callback_) => {
             arr.forEach(callback)
         }
-        static #arr_to_object = (arr = [], { before, after } = {}, value = undefined) => {
+        static #arr_to_object = (arr = [], { before, after } = {}, callback = () => { }) => {
             let self = _getSelf()
             let result = {}
             let af = "", bef = ""
@@ -120,7 +122,7 @@ const Tools = (() => {
             if (before) bef = before
             if (after) af = after
             self.forEach(arr, (name) => {
-                result[bef + name + af] = value
+                result[bef + name + af] = callback()
             })
             return result
         }
