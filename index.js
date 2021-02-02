@@ -132,12 +132,12 @@
     //     smooth,
     //     Styler
     // }
-    // globalThis.$ = $
-    // globalThis.$all = $all
-    // globalThis.$id = $id
-    // globalThis.is = is
-    // globalThis.$$ = document
-    // globalThis.isMobile = isMobile
-    // globalThis.isMobileAndTablet = isMobileAndTablet
+    globalThis.$ = $
+    globalThis.$all = $all
+    globalThis.$id = $id
+    globalThis.is = is
+    globalThis.$$ = document
+    globalThis.isMobile = isMobile
+    globalThis.isMobileAndTablet = isMobileAndTablet
     console.log("connected tools")
 })(globalThis);
