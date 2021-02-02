@@ -1,296 +1,142 @@
-const Tools = (() => {
-    class Tools {
-        //#region Constructor
-        /** @type { any[] } */
-        #arr
-        /** @type {{ }} */
-        #event
-        /**
-         * @param { any[] } arr
-         */
-        constructor(...arr) {
-            this.result = new Array()
-            this.#event = Tools.#arr_to_object(Tools.#event_names)
-            this.arr = arr || new Array()
-        }
-        //#endregion
-
-        //#region Add Remove Set - array
-        /**
-         * @param { string | any[] } value
-         */
-        set arr(value) {
-            this.#callEvent("change")
-            this.#arr = value
-        }
-        /** @returns { any[] } */
-        get arr() {
-            return this.#arr
-        }
-        set add(value = []) {
-            this.#callEvent("added")
-            if (Array.isArray(value)) {
-                this.#arr.push(...value)
-            } else {
-                this.#arr.push(value)
-            }
-        }
-        removeWithIndex(index) {
-
-            if (!typeof index == "number") {
-                return new Error("Is not number")
-            } else if (index >= this.#arr.length) {
-                return new Error("The digit is too large from the length of the array")
-            }
-            this.#callEvent("removed")
-            this.#arr.splice(index, 1)
-        }
-        //#endregion
-
-        //#region Then
-        then(callback = _callback_) {
-            this.arr = this.result
-            this.result = []
-            return this
-        }
-        done() {
-            this.then()
-            return this.arr
-        }
-        //#endregion
-
-        //#region User use functions
-        foreach(callback = _callback_) {
-            for (let i = 0; i < this.arr.length; i++) {
-                const el = this.arr[i];
-                callback(el, i)
-            }
-            return this
-        }
-        filter(fn = _fn_) {
-            this.result = new Array()
-            for (let i = 0; i < this.arr.length; i++) {
-                const el = this.arr[i];
-                if (fn(el, i)) {
-                    this.result.push(el)
-                }
-            }
-            return this
-        }
-        reverse(fn = _fn_) {
-            this.result = new Array()
-            for (let i = this.arr.length - 1; i >= 0; i--) {
-                const el = this.arr[i];
-                if (fn(el, i)) {
-                    this.result.push(el)
-                }
-            }
-            return this
-        }
-        sort() {
-            let self = _getSelf()
-            let arrs = self.#arr_to_object(self.#arr_types, { before: "_" }, () => { return new Array() })
-            let result = new Array()
-
-            for (let i = 0; i < this.arr.length; i++) {
-                arrs["_" + self.type(this.arr[i])].push(this.arr[i])
-            }
-            for (const name in arrs) {
-                if (arrs.hasOwnProperty(name)) {
-                    arrs[name] = self.sorter_fn[name](arrs[name].slice())
-                }
-                if (arrs[name] !== undefined) {
-                    result.push(...arrs[name])
-                }
-
-            }
-
-            this.result = result
-            return this
-        }
-        //#endregion
-
-        //#region static forEach
-        static forEach = (arr = [], callback = _callback_) => {
-            arr.forEach(callback)
-        }
-        static #arr_to_object = (arr = [], { before, after } = {}, callback = () => { }) => {
-            let self = _getSelf()
-            let result = {}
-            let af = "", bef = ""
-
-            if (before) bef = before
-            if (after) af = after
-            self.forEach(arr, (name) => {
-                result[bef + name + af] = callback()
-            })
-            return result
-        }
-        //#endregion
-
-        //#region Event
-        /** @param { "change" | "added" | "deleted" } event */
-        on(event = new String(), callback = event_fn) {
-            var self = _getSelf()
-
-            if (self.isString(event) && self.#isEvent(event)) {
-                self.#add(this, event, callback)
-            }
-            return this
-        }
-        /** @param { "change" | "added" | "deleted" } event */
-        off(event = new String()) {
-            var self = _getSelf()
-
-            if (self.isString(event) && self.#isEvent(event)) {
-                self.#remove(this, event)
-            }
-            return this
-        }
-        /** @param { "change" | "added" | "deleted" } event */
-        once(event = new String(), callback = event_fn) {
-            let t = this
-            let self = _getSelf()
-            if (self.isString(event) && self.#isEvent(event)) {
-                self.#add(t, event, (el, i) => {
-                    callback(el, i)
-                    self.#remove(t, event)
-                })
-            }
-        }
-        #callEvent = (name) => {
-            var self = _getSelf()
-
-            if (self.#isEvent(name) && !self.isEmpty(this.#event[name])) {
-                this.#event[name].call(this.arr, name)
-            }
-        }
-        //#endregion 
-
-        //#region static Event
-        static #event_names = ["change", "added", "deleted"]
-        static #isEvent = (str) => {
-            let res = false
-            let self = _getSelf()
-            self.#event_names.forEach((name) => {
-                if (name == str) res = true
-            })
-            return res
-        }
-        static #add = (self, type, callback) => {
-            self.#event[type] = callback
-        }
-        static #remove = (self, type) => {
-            self.#event[type] = undefined;
-        }
-        //#endregion
-
-        //#region static isType
-        static type(param) {
-            return typeof param
-        }
-        static isObject(param) {
-            return this.type(param) == "object"
-        }
-        static isString(param) {
-            return this.type(param) == "string"
-        }
-        static isNumber(param) {
-            return this.type(param) == "number"
-        }
-        static isArray(param) {
-            return Array.isArray(param)
-        }
-        static isEmpty(param) {
-            return (param == undefined | param == null)
-        }
-        //#endregion
-
-        //#region static sorter fn
-        static #arr_types = ["string", "number", "object", "boolean", "function", "bigint", "symbol", "undefined"]
-        static sorter_fn = {
-            _string: (arr) => { return arr.sort() },
-            _number: (arr) => {
-                var result = new Array()
-                for (; 0 < arr.length;) {
-                    result.push(
-                        arr.splice(
-                            arr.indexOf(Math.min(...arr)), 1
-                        )[0]
-                    )
-                }
-                return result
-            },
-            _object: (arr) => { return arr },
-            _function: (arr) => { return arr },
-            _boolean: (arr) => { return arr },
-            _bigint: (arr) => { return arr },
-            _symbol: (arr) => { return arr },
-            _undefined: (arr) => { return arr },
-        }
-        //#endregion
-
-        //#region static Help
-        /**
-         * @param { string } type
-         */
-        static help(type) {
-            if (!_getSelf().isString(type)) {
-                return new Error("is not string")
-            }
-
-            switch (type + "") {
-                case "add":
-                    console.log("create class with 'new' and call needs methods")
-                    break;
-                case "sort":
-                    console.log("sort")
-                    break;
-                case "add":
-                    console.log("add")
-                    break;
-                case "remove":
-                    console.log("remove")
-                    break;
-                case "filter":
-                    console.log("filter")
-                    break;
-                case "reverse":
-                    console.log("reverse")
-                    break;
-                default:
-                    if (type + "" == "" || type == undefined || type == null) {
-                        console.log("use class, sort, add, remove, filter, reverse")
-                    } else {
-                        console.log("I didn't understand")
-                    }
-                    break;
-            }
-            return _getSelf()
-        }
-        //#endregion
+; ((g) => {
+    if (document == undefined && window == undefined && g == window) {
+        return new Error()
     }
-    //#region unknown
+
+    //#region Search Document Element[s]
     /**
-     * @param { any } element
-     * @param { number } index
-     * @returns { any }
+     * @param { string | "div" } query
+     * @returns { Element | HTMLDivElement }
      */
-    function _callback_(element, index) { }
+    function $(query) {
+        return document.querySelector(query)
+    }
     /**
-     * @param { any } element
-     * @param { Number } index
+     * @param {string} id
      */
-    function _fn_(element, index) { return !0 }
+    function $id(id) {
+        return document.getElementById(id)
+    }
     /**
-     * @param { any[] } self
-     * @param { string } event_name
+     * @param {string} query
      */
-    function event_fn(self, event_name) { }
-    function _getSelf() { return Tools }
+    function $all(query) {
+        return document.querySelectorAll(query)
+    }
     //#endregion
 
-    try { exports.Tools = Tools } catch { }
-    return Tools
-})();
-globalThis.Tools = Tools
+    //#region CSS Function[s]
+    /**
+     * @param { HTMLElement } target
+     * @param { string } css
+     */
+    function contains(target, css) {
+        return target.classList.contains(css)
+    }
+    /**
+     * @param { HTMLElement } target
+     * @param { string } css
+     */
+    function add(target, css) {
+        target.classList.add(css)
+    }
+    /**
+     * @param { HTMLElement } target
+     * @param { string } css
+     */
+    function remove(target, css) {
+        target.classList.remove(css)
+    }
+    /**
+     * @param { HTMLElement } element
+     * @param { string } css
+     */
+    function toggle(target, css) {
+        let params = [target, css]
+        contains(...params) ? remove(...params) : add(...params)
+    }
+    /**
+     * @param { HTMLDivElement } div
+     * @param {{ }} style
+     */
+    function Styler(div, style) {
+        for (const key in style) {
+            if (Object.hasOwnProperty.call(div.style, key)) {
+                div.style[key] = style[key]
+            }
+        }
+    }
+    //#endregion
+
+    //#region Scroll to "target"
+    /**
+     * @param {HTMLElement} target
+     */
+    function smooth(target) {
+        target.scrollIntoView({ behavior: "smooth" })
+    }
+    //#endregion
+
+    //#region Tools Function[s]
+    /**
+     * @param  { ...string } args
+     */
+    const print = function (...args) {
+        console.log(...args)
+    }
+    const is = {
+        empty: (value) => {
+            return (value == undefined || value == null)
+        },
+        mobileCheck: () => {
+            let check = false;
+            (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+            return check;
+        },
+        mobileAndTabletCheck: () => {
+            let check = false;
+            (function (a) { if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) check = true; })(navigator.userAgent || navigator.vendor || window.opera);
+            return check;
+        }
+    }
+    //#endregion
+
+    //#region CheckMobile
+    const isMobile = is.mobileCheck()
+    const isMobileAndTablet = is.mobileAndTabletCheck()
+    //#endregion
+
+    //#region Other
+    /**
+     * @param { string | string[] } cssClass
+     */
+    function Div(cssClass) {
+        let x = document.createElement("div")
+        if (typeof cssClass == "string") {
+            add(x, cssClass)
+        } else if (Array.isArray(cssClass)) {
+            x.classList.add(...cssClass)
+        }
+        return x
+    }
+
+    
+    //#endregion
+
+
+    globalThis.css = {
+        add,
+        remove,
+        toggle,
+        contains,
+        smooth,
+        Styler
+    }
+    globalThis.$ = $
+    globalThis.$all = $all
+    globalThis.$id = $id
+    globalThis.is = is
+    globalThis.$$ = document
+    globalThis.isMobile = isMobile
+    globalThis.isMobileAndTablet = isMobileAndTablet
+})(globalThis);
