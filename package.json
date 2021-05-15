@@ -1,13 +1,13 @@
 {
   "name": "nonametitan_toolkit",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index"
   },
   "repository": {
-    "type": "dit",
+    "type": "git",
     "url": "git+https://github.com/noname-titan/Tools.git"
   },
   "author": "noname_titan",
