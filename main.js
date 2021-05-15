@@ -250,5 +250,5 @@ class ToolKit extends BasicKit {
 //#region Export
 globalThis.ToolKit = ToolKit
 globalThis.tools = _tools_
-export { ToolKit,  _tools_ as tools }
+export { ToolKit, _tools_ as tools }
 //#endregion
