@@ -1,11 +1,11 @@
 //#region Types
-/** @typedef { number } n */
+/** @typedef {number} n */
 /**
- * @typedef { "string" | "number" | "bigint" | "boolean" |
- * "symbol" | "undefined" | "object" | "function" } allTypes
+ * @typedef {"string" | "number" | "bigint" | "boolean" |
+ * "symbol" | "undefined" | "object" | "function"} allTypes
  */
-/** @typedef { (value, index: n) => (void | boolean)} iterator */
-/** @typedef { (value, name: string) => (void | boolean)} iteratorOBJ */
+/** @typedef {(value, index: n) => (void | boolean)} iterator */
+/** @typedef {(value, name: string) => (void | boolean)} iteratorOBJ */
 //#endregion
 
 const { ToolKit, tools } = (g => {
@@ -14,7 +14,7 @@ const { ToolKit, tools } = (g => {
   let is = Object.freeze({
     /**
      * @param {*} value 
-     * @param { allTypes } type
+     * @param {allTypes} type
      */
     type: (value, type) => typeof value === type,
     func: value => is.type(value, "function"),
@@ -31,8 +31,8 @@ const { ToolKit, tools } = (g => {
 
   //#region Each
   /**
-   * @param { *[] } arr
-   * @param { iterator } fn
+   * @param {*[]} arr
+   * @param {iterator} fn
    */
   let each = (arr, fn) => {
     for (let i = 0; i < arr.length; i++)
@@ -40,7 +40,7 @@ const { ToolKit, tools } = (g => {
   }
   /**
    * @param {{ }} obj
-   * @param { iteratorOBJ } fn
+   * @param {iteratorOBJ} fn
    */
   each.obj = (obj, fn) => {
     for (let k in obj)
@@ -70,7 +70,7 @@ const { ToolKit, tools } = (g => {
   //#endregion
 
   //#region Object Singleton
-  /** @type { string[] } */
+  /** @type {string[]} */
   let _listMono = []
   /**
    * Сhecks whether this item is in the list and returns the result.
@@ -100,7 +100,7 @@ const { ToolKit, tools } = (g => {
   //#endregion
 
   //#region Path
-  /** @param  {...string } str */
+  /** @param  {...string} str */
   let path = (...str) => {
     let z = "", y = "/"
     forEach(str, (x, i) => {
@@ -119,8 +119,8 @@ const { ToolKit, tools } = (g => {
 
   //#region Get [Read] doc or code
   /**
-   * @param { string } url
-   * @param { (err: null | n, res: JSON | any) => void } fn
+   * @param {string} url
+   * @param {(err: null | n, res: JSON | any) => void} fn
    */
   let getJSON = (url, fn) => {
     let x = new XMLHttpRequest()
@@ -133,11 +133,11 @@ const { ToolKit, tools } = (g => {
   //#endregion
 
   //#region Calc
-  /** @type { (a: n, b: n, c: n, d: n) => n } */
+  /** @type {(a: n, b: n, c: n, d: n) => n} */
   const calcRatio = (() => {
     let x = v => "number" == typeof v,
       y = (...v) => v.every(u => x(u)),
-      z = (...v) => v.reduce((a, b) => a + (x(b) ? 1 : 0), 0);
+      z = (...v) => v.reduce((a, b) => a + (x(b) ? 1 : 0), 0)
     return (a, b, c, d) => {
       if (z(a, b, c, d) !== 3) throw new Error("Bad arguments")
       if (y(a, c, d)) return a * d / c
@@ -145,11 +145,11 @@ const { ToolKit, tools } = (g => {
       if (y(a, b, c)) return c * b / a
       if (y(b, c, d)) return c * b / d
     }
-  })();
+  })()
   //#endregion
 
   //#region #### Export Tools
-  const tools = Object.freeze({
+  const _tools_ = Object.freeze({
 
     is,
     each,
@@ -168,6 +168,7 @@ const { ToolKit, tools } = (g => {
 
     //#region Private Param
     static #version = "v0.1"
+    static #self = new BasicKit("Name")
     #name
     //#endregion
 
@@ -184,7 +185,6 @@ const { ToolKit, tools } = (g => {
     //#endregion
 
   }
-  ; new BasicKit("Name");
   //#endregion
 
   //#region ToolKit
@@ -195,7 +195,7 @@ const { ToolKit, tools } = (g => {
 
     //#region Static Param
     static #self = new ToolKit()
-    static #tools = tools
+    static #tools = _tools_
     //#endregion
 
     constructor() { super("ToolKit"); ToolKit.use(this) }
@@ -205,39 +205,43 @@ const { ToolKit, tools } = (g => {
     //#endregion
 
     //#region Static Methods
-    /** @param { BasicKit } kit */
+    /** @param {BasicKit} kit */
     static use(kit) {
-      if (kit instanceof BasicKit && !ToolKit.hasKitWithName(kit.name))
-        usingTools[kit.name] = kit
+      if (kit instanceof BasicKit && !ToolKit.hasKitWithName(kit.name)) {
+        usingTools[kit.name] = kit; return true
+      } else return false
     }
-    /** @param { striing } kitName */
+    /** 
+     * @param {striing} kitName
+     * @returns {BasicKit | null} 
+     */
     static get(kitName) {
       return ToolKit.hasKitWithName(kitName)
         ? usingTools[kitName]
         : null
     }
     /**
-     * @returns { BasicKit[] }
+     * @returns {string[]}
      */
     static getToolNameList() {
       let z = []
       ToolKit.#eachK(x => z.push(x.name))
       return z
     }
-    /** @param { string } kitName */
+    /** @param {string} kitName */
     static hasKitWithName(kitName) { return !is.empty(usingTools[kitName]) }
-    /** @param { BasicKit } kit */
+    /** @param {BasicKit} kit */
     static hasKit(kit) { return !is.empty(usingTools[kit.name]) }
     //#endregion
 
     //#region Static Getter
     static get BasicKit() { return BasicKit }
-    static get tools() { return tools }
+    static get tools() { return _tools_ }
     static get self() { return ToolKit.#self }
     //#endregion
 
     //#region Getter
-    get tools() { return tools }
+    get tools() { return _tools_ }
     //#endregion
 
   }
@@ -245,8 +249,8 @@ const { ToolKit, tools } = (g => {
 
   //#region Export
   g.ToolKit = ToolKit
-  g.tools = tools
-  return { ToolKit, tools }
+  g.tools = _tools_
+  return Object.freeze({ ToolKit, tools: _tools_ })
   //#endregion 
 
-})(globalThis);
+})(globalThis)
