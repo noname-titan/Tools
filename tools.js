@@ -3,7 +3,7 @@
 /** @typedef {(value, index: n, array: *[]) => string} _toString */
 //#endregion 
 
-import {ToolKit, tools } from "./main.js"
+import { ToolKit, tools } from "./main.js"
 
 if (ToolKit == null || ToolKit == undefined)
   throw new Error("This file will not work without the main part\n" +
