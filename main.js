@@ -56,8 +56,8 @@ each.obj = (obj, fn) => {
  */
 let EXTEND = (target, obj) => each.obj(obj, (x, k) => target[k] = x)
 /**
- * @param {new { }} target
- * @param {{}} proto
+ * @param {new} target
+ * @param {{ }} proto
  */
 EXTEND.pro = (target, proto) => each.obj(proto,
   (x, k) => target.prototype[k] = x);
@@ -79,7 +79,7 @@ let _listMono = []
  * If the item is in the list returns "false". So it's okay.
  * 
  * Else "True". This means that the item is present in the list.
- * @param { string } self <-- new.target.name
+ * @param {string} self <-- new.target.name
  * @returns 
  */
 let Mono = self => {
@@ -172,7 +172,7 @@ class BasicKit {
   #name
   //#endregion
 
-  /** @param { string } name */
+  /** @param {string} name */
   constructor(name) {
     if (Mono.super(new.target.name))
       throw new Error("the Kit objects must be in a single instance")
@@ -212,7 +212,7 @@ class ToolKit extends BasicKit {
     } else return false
   }
   /** 
-   * @param {striing} kitName
+   * @param {string} kitName
    * @returns {BasicKit | null} 
    */
   static get(kitName) {
