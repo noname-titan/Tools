@@ -92,11 +92,6 @@ Mono.has = self => {
   each(_listMono, x => has = (x == self))
   return has
 }
-Mono.super = (self = {}) => {
-  let has = Mono.has(self)
-  if (!has) _listMono.push(self)
-  return has
-}
 //#endregion
 
 //#region Path
@@ -174,7 +169,7 @@ class BasicKit {
 
   /** @param {string} name */
   constructor(name) {
-    if (Mono.super(new.target.name))
+    if (Mono(new.target.name))
       throw new Error("the Kit objects must be in a single instance")
     this.#name = name
   }
