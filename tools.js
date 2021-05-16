@@ -21,7 +21,7 @@ class List {
   constructor() { this.#list = [] }
 
   //#region Static Methods
-  /** @param { *[] } arr */
+  /** @param {*[]} arr */
   static withArray(arr) {
     if (!is.array(arr)) arr = [arr]
     let x = new List(); x.push(...arr); return x
@@ -86,7 +86,7 @@ class List {
   //#endregion
 
   //#region Sort Item
-  /** @param { comparator } compare */
+  /** @param {comparator} compare */
   sort(compare) { this.#list.sort(compare); return this }
   //#endregion
 
@@ -296,7 +296,7 @@ class LinkedList {
 //#endregion
 
 //#region #### Export Tools
-const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList })
+const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList, Comparator })
 //#endregion
 
 //#region Algorithm Kit
