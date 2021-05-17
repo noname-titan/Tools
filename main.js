@@ -128,6 +128,18 @@ let getJSON = (url, fn) => {
 //#endregion
 
 //#region Calc
+/**
+ * @param {HTMLImageElement} img
+ * @returns {string}
+ */
+let getBase64Image=img=> {
+  let x = $$.createElement("canvas");
+  x.width = img.width;
+  x.height = img.height;
+  x.getContext("2d").drawImage(img, 0, 0)
+  return x.toDataURL("image/png")
+}
+getBase64Image.pro = img => getBase64Image(img).replace(/^data:image\/(png|jpg);base64,/, "")
 /** @type {(a: n, b: n, c: n, d: n) => n} */
 const calcRatio = (() => {
   let x = v => "number" == typeof v,
