@@ -117,13 +117,13 @@ let path = (...str) => {
  * @param {string} url
  * @param {(err: null | n, res: JSON | any) => void} fn
  */
-let request = (url, fn) => {
+let getJSON = (url, fn) => {
   let x = new XMLHttpRequest()
   x.open('GET', url, true)
   x.responseType = 'json'
   x.onload = () => fn(x.status === 200 ? null : x.status, x.response)
   x.send()
-}, getData = (url, fn) => request(location.origin + (url[0] !== "/" ? "/" + url : url), fn)
+}, getData = (url, fn) => getJSON(location.origin + (url[0] !== "/" ? "/" + url : url), fn)
 
 //#endregion
 
@@ -152,7 +152,7 @@ const _tools_ = Object.freeze({
   Mono,
   path,
   getData,
-  request,
+  getJSON,
   calcRatio
 
 })
