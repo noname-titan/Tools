@@ -196,7 +196,7 @@ class BasicKit {
 
   /** @param {string} name */
   constructor(name) {
-    if (Mono(new.target.name))
+    if (Mono.force(new.target.name))
       throw new Error("the Kit objects must be in a single instance")
     this.#name = name
   }
