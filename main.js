@@ -71,7 +71,27 @@ EXTEND.binder = (target, proto) => each.obj(proto,
 
 //#region Object Singleton
 /** @type {string[]} */
-let _listMono = []
+let _listMono = ["Mono"]
+/**
+ * Сhecks whether this item is in the list and returns the result.
+ * After checking, it is added to the list.
+ * 
+ * If the item is in the list returns "false". So it's okay.
+ * 
+ * Else "True". This means that the item is present in the list.
+ * @class
+ */
+function Mono() {
+  if (!is.notClass(this)) throw new Error("This element is a class. Call 'new'")
+  let x = new.target.name, has = Mono.has(x)
+  if (!has) _listMono.push(x)
+  return has
+}
+Mono.has = self => {
+  let has = false
+  each(_listMono, x => has = (x == self))
+  return has
+}
 /**
  * Сhecks whether this item is in the list and returns the result.
  * After checking, it is added to the list.
@@ -80,16 +100,10 @@ let _listMono = []
  * 
  * Else "True". This means that the item is present in the list.
  * @param {string} self <-- new.target.name
- * @returns 
  */
-let Mono = self => {
+Mono.force = self => {
   let has = Mono.has(self)
   if (!has) _listMono.push(self)
-  return has
-}
-Mono.has = self => {
-  let has = false
-  each(_listMono, x => has = (x == self))
   return has
 }
 //#endregion
@@ -123,7 +137,7 @@ let getJSON = (url, fn) => {
   x.responseType = 'json'
   x.onload = () => fn(x.status === 200 ? null : x.status, x.response)
   x.send()
-}, getData = (url, fn) => getJSON(location.origin + (url[0] !== "/" ? "/" + url : url), fn)
+}, getData = (url, fn) => getJSON(path(location.origin, url), fn)
 
 //#endregion
 
@@ -132,7 +146,7 @@ let getJSON = (url, fn) => {
  * @param {HTMLImageElement} img
  * @returns {string}
  */
-let getBase64Image=img=> {
+let getBase64Image = img => {
   let x = $$.createElement("canvas");
   x.width = img.width;
   x.height = img.height;
@@ -165,7 +179,8 @@ const _tools_ = Object.freeze({
   path,
   getData,
   getJSON,
-  calcRatio
+  calcRatio,
+  getBase64Image
 
 })
 //#endregion
