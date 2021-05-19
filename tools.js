@@ -295,6 +295,82 @@ class LinkedList {
 }
 //#endregion
 
+//#region Event
+class EventHandler {
+  #parent
+  #func = () => void 0
+  constructor(parent) {
+    if (parent instanceof Event_) {
+      this.#parent = parent
+    } else throw new TypeError("Bad Argument")
+  }
+  static Event_() { return Event_ }
+
+  Event_ = () => {
+
+    //#region Event
+    class Event_ {
+
+      //#region Private
+      #call = (h, a, s = null) => {
+        if (this.#handlers.includes(h)) h.#func.call(s, ...a)
+      }
+      #change = (h, f) => { if (this.#handlers.includes(h)) h.#func = f }
+      #list
+      /** @type {EventHandler[]} */ #handlers = []
+      //#endregion
+
+      /** @param {string[]} eventList */
+      constructor(eventList) {
+        eventList = [...eventList]
+        this.#list = eventList
+        each(eventList, x => self.#handlers.push(new EventHandler(self)))
+      }
+
+      //#region Static Methods
+      /** @param {string[]} eventList */
+      static init(eventList) {
+        let self = new Event_(eventList)
+        return { slef, handlers: [...self.#handlers] }
+      }
+      /** @param {string[]} eventList */
+      static force(eventList) {
+        eventList = [...eventList]
+        let self = new Event_(eventList)
+        each(eventList, x => self.#handlers.push(new EventHandler(self)))
+        self.#call = (h, a, s) => {
+          if (eventList.includes(h))
+            self.#handlers[self.#handlers.indexOf(h)].#func.call(s, ...a)
+        }
+        self.#change = (h, f) => {
+          if (eventList.includes(h))
+            self.#handlers[self.#handlers.indexOf(h)].#func = f
+        }
+        return self
+      }
+      //#endregion
+
+      //#region Methods
+      /**
+       * @param {EventHandler | string} handler
+       * @param {any[]} args
+       * @param {any} [self]
+       */
+      call(handler, args, self = null) { this.#call(handler, args, self) }
+      change(handler, func) { this.#change(handler, func) }
+      //#endregion
+
+    }
+    //#endregion
+
+    return Event_
+  }
+}
+/** @type {Event_} */
+let Event_ = EventHandler.Event_()
+EventHandler.Event_ = null
+//#endregion
+
 //#region #### Export Tools
 const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList, Comparator })
 //#endregion
