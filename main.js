@@ -21,11 +21,11 @@ let is = Object.freeze({
   num: value => is.type(value, "number"),
   str: value => is.type(value, "string"),
   obj: value => is.type(value, "object"),
-  empty: value => (value == null || value == undefined),
+  empty: value => (value === null || value === undefined),
 
   array: value => Array.isArray(value),
 
-  notClass: value => (value == globalThis || is.empty(value))
+  notClass: value => (value === globalThis || is.empty(value))
 })
 //#endregion
 
@@ -82,7 +82,8 @@ let _listMono = ["Mono"]
  * @class
  */
 function Mono() {
-  if (!is.notClass(this)) throw new Error("This element is a class. Call 'new'")
+  if (!is.notClass(this))
+    throw new Error("This element is a class. Call 'new'")
   return Mono.force(new.target.name)
 }
 Mono.has = self => {
@@ -113,8 +114,7 @@ let path = (...str) => {
   each(str, (x, i) => {
     x = x.trim()
     if (i > 0 && x.slice(0, 3) == "../") {
-      z = z.slice(0, z.lastIndexOf("/"))
-      x = s.slice(2)
+      z = z.slice(0, z.lastIndexOf("/")); x = s.slice(2)
     }
     if (i > 0 && x[0] !== y) x = y + x
     if (i < str.length && x.endsWith(y)) x = x.slice(0, x.length - 1)
@@ -227,7 +227,8 @@ class ToolKit extends BasicKit {
   //#region Static Methods
   /** @param {BasicKit} kit */
   static use(kit) {
-    if (kit instanceof BasicKit && !ToolKit.hasKitWithName(kit.name)) {
+    if (kit instanceof BasicKit
+      && !ToolKit.hasKitWithName(kit.name)) {
       usingTools[kit.name] = kit; return true
     } else return false
   }
