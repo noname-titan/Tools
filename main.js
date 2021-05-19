@@ -8,8 +8,6 @@
 /** @typedef {(value, name: string) => (void | boolean)} iteratorOBJ */
 //#endregion
 
-
-
 //#region Check type
 let is = Object.freeze({
   /**
@@ -151,6 +149,10 @@ let getBase64Image = img => {
   x.getContext("2d").drawImage(img, 0, 0)
   return x.toDataURL("image/png")
 }
+/**
+ * @param {HTMLImageElement} img
+ * @returns {string}
+ */
 getBase64Image.pro = img => getBase64Image(img).replace(/^data:image\/(png|jpg);base64,/, "")
 /** @type {(a: n, b: n, c: n, d: n) => n} */
 const calcRatio = (() => {
