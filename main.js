@@ -83,9 +83,7 @@ let _listMono = ["Mono"]
  */
 function Mono() {
   if (!is.notClass(this)) throw new Error("This element is a class. Call 'new'")
-  let x = new.target.name, has = Mono.has(x)
-  if (!has) _listMono.push(x)
-  return has
+  return Mono.force(new.target.name)
 }
 Mono.has = self => {
   let has = false
