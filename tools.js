@@ -304,7 +304,7 @@ class EventHandler {
       this.#parent = parent
     } else throw new TypeError("Bad Argument")
   }
-  static Event_() { return Event_ }
+  // static Event_() { return Event_ }
 
   Event_ = () => {
 
