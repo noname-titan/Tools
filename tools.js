@@ -306,7 +306,7 @@ class EventHandler {
   }
   // static Event_() { return Event_ }
 
-  Event_ = () => {
+  static Event_ = () => {
 
     //#region Event
     class Event_ {
@@ -367,8 +367,8 @@ class EventHandler {
   }
 }
 /** @type {Event_} */
-let Event_ = EventHandler.Event_()
-EventHandler.Event_ = null
+// let Event_ = EventHandler.Event_()
+// EventHandler.Event_ = null
 //#endregion
 
 //#region #### Export Tools
