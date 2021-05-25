@@ -11,7 +11,7 @@ if (ToolKit == null || ToolKit == undefined)
   throw new Error("This file will not work without the main part\n" +
     "Please read more: https://github.com/noname-titan/Tools")
 
-let { each } = tools
+let { each, is } = tools
 
 //#region Query DOM Element
 let $$ = document
@@ -76,7 +76,7 @@ device = Object.freeze(device)
 
 //#region HTML
 /** @returns {HTMLDivElement} return new Div Element */
-let Div = () => $$.createElement("div")
+let Div = (tag) => $$.createElement(is.str(tag) ? tag : "div")
 /** @param {docElement} target */
 let smooth = target => { target.scrollIntoView({ behavior: "smooth" }) }
 //#endregion
