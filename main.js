@@ -84,11 +84,7 @@ function Mono() {
     throw new Error("This element is a class. Call 'new'")
   return Mono.force(new.target.name)
 }
-Mono.has = self => {
-  let has = false
-  each(_listMono, x => has = (x == self))
-  return has
-}
+Mono.has = self => _listMono.includes(self);
 /**
  * Сhecks whether this item is in the list and returns the result.
  * After checking, it is added to the list.
@@ -197,7 +193,7 @@ class BasicKit {
   /** @param {string} name */
   constructor(name) {
     if (Mono.force(new.target.name))
-      throw new Error("the Kit objects must be in a single instance")
+      throw new Error("The Kit objects must be in a single instance")
     this.#name = name
   }
 
