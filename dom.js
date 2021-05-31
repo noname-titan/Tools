@@ -1,11 +1,11 @@
-import { ToolKit, tools } from "./main.js"
-
 //#region Types
 /**
  * @typedef {HTMLElement | HTMLDivElement | Element |
  * HTMLDocument | Document} docElement
  */
 //#endregion
+
+const { ToolKit, tools } = require("./main")
 
 if (ToolKit == null || ToolKit == undefined)
   throw new Error("This file will not work without the main part\n" +
@@ -76,7 +76,7 @@ device = Object.freeze(device)
 
 //#region HTML
 /** @returns {HTMLDivElement} return new Div Element */
-let Div = (tag) => $$.createElement(is.str(tag) ? tag : "div")
+let Div = tag => $$.createElement(is.str(tag) ? tag : "div")
 /** @param {docElement} target */
 let smooth = target => { target.scrollIntoView({ behavior: "smooth" }) }
 //#endregion
@@ -100,12 +100,11 @@ const _tools_ = Object.freeze({
 //#region DOM Kit
 class DOM_Kit extends ToolKit.BasicKit {
   constructor() { super("DOM Kit") }
-  static get tools() { return _tools_ }
+  get tools() { return _tools_ }
 }
 ToolKit.use(new DOM_Kit())
 //#endregion
 
 //#region Export
-globalThis.DOM = _tools_
-export default _tools_
+module.exports = globalThis.DOM = _tools_
 //#endregion

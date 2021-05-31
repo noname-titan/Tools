@@ -1,5 +1,5 @@
-import { ToolKit, tools } from "./main.js"
-import Algorithm from "./tools.js"
-import DOM from "./dom.js"
+const { ToolKit, tools } = require("./main"),
+  Algorithm = require("./tools"),
+  DOM = require("./dom");
 
-export { ToolKit, tools, Algorithm, DOM }
+module.exports = { ToolKit, tools, Algorithm, DOM }

@@ -3,7 +3,7 @@
 /** @typedef {(value, index: n, array: *[]) => string} _toString */
 //#endregion 
 
-import { ToolKit, tools } from "./main.js"
+const { ToolKit, tools } = require("./main")
 
 if (ToolKit == null || ToolKit == undefined)
   throw new Error("This file will not work without the main part\n" +
@@ -378,12 +378,12 @@ const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList, Comparator })
 //#region Algorithm Kit
 class Algorithm_Kit extends ToolKit.BasicKit {
   constructor() { super("Algorithm Kit") }
-  static get tools() { return tools_ }
+  get tools() { return _tools_ }
 }
 ToolKit.use(new Algorithm_Kit())
 //#endregion
 
 //#region Export
-export default _tools_
+module.exports = _tools_
 //#endregion
 
