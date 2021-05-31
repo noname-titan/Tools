@@ -107,5 +107,5 @@ ToolKit.use(new DOM_Kit())
 
 //#region Export
 globalThis.DOM = _tools_
-export default DOM = _tools_
+export default _tools_
 //#endregion
