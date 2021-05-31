@@ -3,7 +3,7 @@
 /** @typedef {(value, index: n, array: *[]) => string} _toString */
 //#endregion 
 
-const { ToolKit, tools } = require("./main")
+import { ToolKit, tools } from "./main.js"
 
 if (ToolKit == null || ToolKit == undefined)
   throw new Error("This file will not work without the main part\n" +
@@ -384,6 +384,6 @@ ToolKit.use(new Algorithm_Kit())
 //#endregion
 
 //#region Export
-module.exports = _tools_
+export default _tools_
 //#endregion
 
