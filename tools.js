@@ -3,9 +3,9 @@
 /** @typedef {(value, index: n, array: *[]) => string} _toString */
 //#endregion 
 
-import { ToolKit, tools } from "./main.js"
+import { XCore, tools } from "./main.js"
 
-if (ToolKit == null || ToolKit == undefined)
+if (XCore == null || XCore == undefined)
   throw new Error("This file will not work without the main part\n" +
     "Please read more: https://github.com/noname-titan/Tools")
 
@@ -376,14 +376,9 @@ const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList, Comparator })
 //#endregion
 
 //#region Algorithm Kit
-class Algorithm_Kit extends ToolKit.BasicKit {
-  constructor() { super("Algorithm Kit") }
-  get tools() { return _tools_ }
-}
-ToolKit.use(new Algorithm_Kit())
+XCore.use("Algorithm", _tools_)
 //#endregion
 
 //#region Export
 export default _tools_
 //#endregion
-

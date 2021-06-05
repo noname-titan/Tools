@@ -181,93 +181,50 @@ const _tools_ = Object.freeze({
 })
 //#endregion
 
-//#region BasicKit
-class BasicKit {
+//#region XCore
+class XCore {
+  static #self = new XCore()
 
-  //#region Private Param
-  static #version = "v0.1"
-  static #self = new BasicKit("Name")
-  #name
-  //#endregion
+  #version = "v0.7"
+  #tools = _tools_
+  #k = "_Kit"
 
-  /** @param {string} name */
-  constructor(name) {
+  constructor() {
+    if (new.target !== XCore)
+      throw new TypeError("Cannot inherit from the XCore class")
     if (Mono.force(new.target.name))
       throw new Error("The Kit objects must be in a single instance")
-    this.#name = name
   }
 
-  //#region Getter
-  get name() { return this.#name }
-  static get version() { return BasicKit.#version }
-  //#endregion
-
-}
-//#endregion
-
-//#region ToolKit
-/** ToolKit Util */
-const usingTools = {}
-
-class ToolKit extends BasicKit {
-
-  //#region Static Param
-  static #self = new ToolKit()
-  static #tools = _tools_
-  //#endregion
-
-  constructor() { super("ToolKit"); ToolKit.use(this) }
-
-  //#region Private Static Methods
-  static #eachK(fn) { each.obj(usingTools, fn) }
-  //#endregion
-
-  //#region Static Methods
-  /** @param {BasicKit} kit */
-  static use(kit) {
-    if (kit instanceof BasicKit
-      && !ToolKit.hasKitWithName(kit.name)) {
-      usingTools[kit.name] = kit; return true
-    } else return false
+  has(target) {
+    let x = false
+    if (is.str(target) && XCore.self.hasKitWithName(target))
+      return true
+    each.obj(XCore.self, value => x = (value == target))
+    return x
   }
-  /** 
-   * @param {string} kitName
-   * @returns {BasicKit | null} 
-   */
-  static get(kitName) {
-    return ToolKit.hasKitWithName(kitName)
-      ? usingTools[kitName]
-      : null
+  hasKitWithName(name = "") {
+    return !is.empty(XCore.self[name
+      .endsWith(XCore.#self.#k) ? name : name + XCore.self.#k])
   }
-  /**
-   * @returns {string[]}
-   */
-  static getToolNameList() {
-    let z = []
-    ToolKit.#eachK(x => z.push(x.name))
-    return z
+  use(name, kit) {
+    Object.defineProperty(XCore.#self, name + XCore.self.#k, {
+      value: kit,
+      writable: false,
+      enumerable: is.array(kit),
+      configurable: false
+    })
   }
-  /** @param {string} kitName */
-  static hasKitWithName(kitName) { return !is.empty(usingTools[kitName]) }
-  /** @param {BasicKit} kit */
-  static hasKit(kit) { return !is.empty(usingTools[kit.name]) }
-  //#endregion
 
-  //#region Static Getter
-  static get BasicKit() { return BasicKit }
-  static get tools() { return _tools_ }
-  static get self() { return ToolKit.#self }
-  //#endregion
-
-  //#region Getter
+  static get self() { return XCore.#self }
   get tools() { return _tools_ }
-  //#endregion
-
+  get version() { return XCore.#self.#version }
 }
 //#endregion
 
 //#region Export
-globalThis.ToolKit = ToolKit
+const xcore = XCore.self
+globalThis.XCore = xcore
 globalThis.tools = _tools_
-export { ToolKit, _tools_ as tools }
+export { xcore as XCore, _tools_ as tools }
 //#endregion

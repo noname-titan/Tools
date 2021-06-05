@@ -5,9 +5,9 @@
  */
 //#endregion
 
-import { ToolKit, tools } from "./main.js"
+import { XCore, tools } from "./main.js"
 
-if (ToolKit == null || ToolKit == undefined)
+if (XCore == null || XCore == undefined)
   throw new Error("This file will not work without the main part\n" +
     "Please read more: https://github.com/noname-titan/Tools")
 
@@ -98,11 +98,7 @@ const _tools_ = Object.freeze({
 //#endregion
 
 //#region DOM Kit
-class DOM_Kit extends ToolKit.BasicKit {
-  constructor() { super("DOM Kit") }
-  get tools() { return _tools_ }
-}
-ToolKit.use(new DOM_Kit())
+XCore.use("DOM", _tools_)
 //#endregion
 
 //#region Export
