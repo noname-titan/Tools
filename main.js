@@ -187,7 +187,6 @@ class XCore {
 
   #version = "v0.7"
   #tools = _tools_
-  #k = "_Kit"
 
   constructor() {
     if (new.target !== XCore)
@@ -196,6 +195,9 @@ class XCore {
       throw new Error("The Kit objects must be in a single instance")
   }
 
+  /**
+   * @param {string | Object} target
+   */
   has(target) {
     let x = false
     if (is.str(target) && XCore.self.hasKitWithName(target))
@@ -203,12 +205,16 @@ class XCore {
     each.obj(XCore.self, value => x = (value == target))
     return x
   }
-  hasKitWithName(name = "") {
-    return !is.empty(XCore.self[name
-      .endsWith(XCore.#self.#k) ? name : name + XCore.self.#k])
+  /**
+   * @param {string} name
+   */
+  hasKitWithName(name) {
+    if (is.str(name) && name != "") return !is.empty(XCore.self[name])
+    return false
   }
-  use(name, kit) {
-    Object.defineProperty(XCore.#self, name + XCore.self.#k, {
+  define(name, kit) {
+    if (!is.str(name) && is.empty(kit)) return
+    Object.defineProperty(XCore.#self, name, {
       value: kit,
       writable: false,
       enumerable: is.array(kit),

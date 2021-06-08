@@ -248,8 +248,7 @@ class LinkedList {
     if (this.head === this.tail) { this.head = this.tail = null; return d }
     let c = this.head
     while (c.next) if (!c.next.next) { c.next = null } else c = c.next
-    this.tail = c
-    return d
+    this.tail = c;    return d
   }
   deleteHead() {
     if (!this.head) return null
@@ -263,16 +262,11 @@ class LinkedList {
    * @param {*[]} values - Array of values that need
    * to be converted to linked list. 
    */
-  fromArray(values) {
-    values.forEach(x => this.append(x))
-    return this
-  }
+  fromArray(values) { values.forEach(x => this.append(x)); return this }
 
   /** @return {LinkedListNode[]} */
   toArray() {
-    let n = [], c = this.head
-    while (c) { n.push(c); c = c.next }
-    return n
+    let n = [], c = this.head; while (c) { n.push(c); c = c.next }; return n
   }
 
   /**
@@ -295,88 +289,68 @@ class LinkedList {
 }
 //#endregion
 
-//#region Event
-class EventHandler {
-  #parent
-  #func = () => void 0
-  constructor(parent) {
-    if (parent instanceof Event_) {
-      this.#parent = parent
-    } else throw new TypeError("Bad Argument")
+class XEvent {
+
+  //#region Private
+  /** @type {string[]} */ #list
+  #fns = {}
+  //#endregion
+
+  /** @param {string[]} eventList */
+  constructor(eventList) {
+    each(this.#list = [...eventList], e => this.#fns[e] = { fn: [] })
   }
-  // static Event_() { return Event_ }
 
-  static Event_ = () => {
-
-    //#region Event
-    class Event_ {
-
-      //#region Private
-      #call = (h, a, s = null) => {
-        if (this.#handlers.includes(h)) h.#func.call(s, ...a)
-      }
-      #change = (h, f) => { if (this.#handlers.includes(h)) h.#func = f }
-      #list
-      /** @type {EventHandler[]} */ #handlers = []
-      //#endregion
-
-      /** @param {string[]} eventList */
-      constructor(eventList) {
-        eventList = [...eventList]
-        this.#list = eventList
-        each(eventList, x => self.#handlers.push(new EventHandler(self)))
-      }
-
-      //#region Static Methods
-      /** @param {string[]} eventList */
-      static init(eventList) {
-        let self = new Event_(eventList)
-        return { slef, handlers: [...self.#handlers] }
-      }
-      /** @param {string[]} eventList */
-      static force(eventList) {
-        eventList = [...eventList]
-        let self = new Event_(eventList)
-        each(eventList, x => self.#handlers.push(new EventHandler(self)))
-        self.#call = (h, a, s) => {
-          if (eventList.includes(h))
-            self.#handlers[self.#handlers.indexOf(h)].#func.call(s, ...a)
-        }
-        self.#change = (h, f) => {
-          if (eventList.includes(h))
-            self.#handlers[self.#handlers.indexOf(h)].#func = f
-        }
-        return self
-      }
-      //#endregion
-
-      //#region Methods
-      /**
-       * @param {EventHandler | string} handler
-       * @param {any[]} args
-       * @param {any} [self]
-       */
-      call(handler, args, self = null) { this.#call(handler, args, self) }
-      change(handler, func) { this.#change(handler, func) }
-      //#endregion
-
-    }
-    //#endregion
-
-    return Event_
+  //#region Static Methods
+  /** @param {string} name */
+  hasWithName(name) { return this.#list.includes(name) }
+  /** @param {string} name */
+  hasFunc(name) {
+    if (is.empty(this.#fns[name]))
+      return is.func(this.#fns[name].fn[0])
+    return false
   }
+  /**
+   * @param {string} name
+   * @param {any[]} args
+   * @param {any} [self]
+   */
+  call(name, args, self = null) {
+    if (this.hasFunc(name))
+      each(this.#fns[name].fn, f => { f.apple(self, args); return false })
+  }
+  /**
+   * @param {string} name
+   * @param {(...args: any) => void} callback
+   * @param {{ }} config
+   */
+  addEvent(name, callback, config) {
+    let x = false
+    if (x = this.hasWithName(name)) this.#fns[name].fn.push(callback)
+    return x
+  }
+  /**
+   * @param {string} name
+   * @param {(...args: any) => void} callback
+   */
+  removeEvent(name, callback) {
+    if (this.hasWithName(name))
+      each(this.#fns[name].fn, (f, i) => {
+        if (f == callback) this.#fns[name].fn.splice(i, 1)
+      })
+  }
+  /** @param {string} name */
+  clearEvent(name) { if (this.hasWithName(name)) this.#fns[name].fn = [] }
 }
-/** @type {Event_} */
-// let Event_ = EventHandler.Event_()
-// EventHandler.Event_ = null
+//#region Event
 //#endregion
 
 //#region #### Export Tools
-const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList, Comparator })
+const _tools_ = Object.freeze({ List, Stack, Queue, LinkedList, Comparator, XEvent })
 //#endregion
 
 //#region Algorithm Kit
-XCore.use("Algorithm", _tools_)
+XCore.define("Algorithm", _tools_)
 //#endregion
 
 //#region Export

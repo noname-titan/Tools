@@ -98,7 +98,7 @@ const _tools_ = Object.freeze({
 //#endregion
 
 //#region DOM Kit
-XCore.use("DOM", _tools_)
+XCore.define("DOM", _tools_)
 //#endregion
 
 //#region Export
