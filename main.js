@@ -139,7 +139,8 @@ const getJSON = (url, fn) => {
  * @returns {string}
  */
 const getBase64Image = img => {
-  const x = $$.createElement("canvas");
+  HTMLCanvasElement
+  const x = new HTMLCanvasElement();
   x.width = img.width;
   x.height = img.height;
   x.getContext("2d").drawImage(img, 0, 0)
