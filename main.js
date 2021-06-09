@@ -104,7 +104,7 @@ Mono.force = self => {
 //#region Path
 /** @param  {...string} str */
 const path = (...str) => {
-  const z = "", y = "/"
+  let z = "", y = "/"
   each(str, (x, i) => {
     x = x.trim()
     if (i > 0 && x.slice(0, 3) == "../") {
