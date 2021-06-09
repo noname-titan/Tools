@@ -139,12 +139,10 @@ const getJSON = (url, fn) => {
  * @returns {string}
  */
 const getBase64Image = img => {
-  HTMLCanvasElement
-  const x = new HTMLCanvasElement();
-  x.width = img.width;
-  x.height = img.height;
+  const x = document.createElement("canvas");
+  x.width = img.width; x.height = img.height;
   x.getContext("2d").drawImage(img, 0, 0)
-  return x.toDataURL("image/png")
+  return x.toDataURL("image/jpeg")
 }
 /**
  * @param {HTMLImageElement} img
