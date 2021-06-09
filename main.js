@@ -141,6 +141,7 @@ const getJSON = (url, fn) => {
 const getBase64Image = img => {
   const x = document.createElement("canvas");
   x.width = img.width; x.height = img.height;
+  img.crossOrigin = "anonymous"
   x.getContext("2d").drawImage(img, 0, 0)
   return x.toDataURL("image/png")
 }
