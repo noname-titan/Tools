@@ -142,7 +142,7 @@ const getBase64Image = img => {
   const x = document.createElement("canvas");
   x.width = img.width; x.height = img.height;
   x.getContext("2d").drawImage(img, 0, 0)
-  return x.toDataURL("image/jpeg")
+  return x.toDataURL("image/png")
 }
 /**
  * @param {HTMLImageElement} img
