@@ -9,7 +9,7 @@
 //#endregion
 
 //#region Check type
-let is = Object.freeze({
+const is = Object.freeze({
   /**
    * @param {*} value 
    * @param {allTypes} type
@@ -32,8 +32,8 @@ let is = Object.freeze({
  * @param {*[]} arr
  * @param {iterator} fn
  */
-let each = (arr, fn) => {
-  for (let i = 0; i < arr.length; i++)
+const each = (arr, fn) => {
+  for (const i = 0; i < arr.length; i++)
     if (fn(arr[i], i) === true) return
 }
 /**
@@ -41,7 +41,7 @@ let each = (arr, fn) => {
  * @param {iteratorOBJ} fn
  */
 each.obj = (obj, fn) => {
-  for (let k in obj)
+  for (const k in obj)
     if (Object.hasOwnProperty.call(obj, k))
       if (fn(obj[k], k) === true) return
 }
@@ -52,7 +52,7 @@ each.obj = (obj, fn) => {
  * @param {{ }} target
  * @param {{ }} obj
  */
-let EXTEND = (target, obj) => each.obj(obj, (x, k) => target[k] = x)
+const EXTEND = (target, obj) => each.obj(obj, (x, k) => target[k] = x)
 /**
  * @param {new} target
  * @param {{ }} proto
@@ -69,7 +69,7 @@ EXTEND.binder = (target, proto) => each.obj(proto,
 
 //#region Object Singleton
 /** @type {string[]} */
-let _listMono = ["Mono"]
+const _listMono = ["Mono"]
 /**
  * Сhecks whether this item is in the list and returns the result.
  * After checking, it is added to the list.
@@ -95,7 +95,7 @@ Mono.has = self => _listMono.includes(self);
  * @param {string} self <-- new.target.name
  */
 Mono.force = self => {
-  let has = Mono.has(self)
+  const has = Mono.has(self)
   if (!has) _listMono.push(self)
   return has
 }
@@ -103,8 +103,8 @@ Mono.force = self => {
 
 //#region Path
 /** @param  {...string} str */
-let path = (...str) => {
-  let z = "", y = "/"
+const path = (...str) => {
+  const z = "", y = "/"
   each(str, (x, i) => {
     x = x.trim()
     if (i > 0 && x.slice(0, 3) == "../") {
@@ -123,8 +123,8 @@ let path = (...str) => {
  * @param {string} url
  * @param {(err: null | n, res: JSON | any) => void} fn
  */
-let getJSON = (url, fn) => {
-  let x = new XMLHttpRequest()
+const getJSON = (url, fn) => {
+  const x = new XMLHttpRequest()
   x.open('GET', url, true)
   x.responseType = 'json'
   x.onload = () => fn(x.status === 200 ? null : x.status, x.response)
@@ -138,8 +138,8 @@ let getJSON = (url, fn) => {
  * @param {HTMLImageElement} img
  * @returns {string}
  */
-let getBase64Image = img => {
-  let x = $$.createElement("canvas");
+const getBase64Image = img => {
+  const x = $$.createElement("canvas");
   x.width = img.width;
   x.height = img.height;
   x.getContext("2d").drawImage(img, 0, 0)

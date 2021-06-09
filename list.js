@@ -24,7 +24,7 @@ class List {
   /** @param {*[]} arr */
   static withArray(arr) {
     if (!is.array(arr)) arr = [arr]
-    let x = new List(); x.push(...arr); return x
+    const x = new List(); x.push(...arr); return x
   }
   //#endregion
 
@@ -51,7 +51,7 @@ class List {
   toArray() { return [...this.#list] }
   /** @param {_toString} fn */
   toString(fn) { return this.toArray().map(fn).toString() }
-  copy() { let x = new List(); x.fromArray(this.#list); return x }
+  copy() { const x = new List(); x.fromArray(this.#list); return x }
   //#endregion
 
   //#region Add Item
@@ -64,7 +64,7 @@ class List {
   //#region Delete | Slice item
   /** @param {n} [index] */
   delete(index) {
-    let x = this.splice(index)
+    const x = this.splice(index)
     this.push(...x.splice(1))
     return x[0]
   }
@@ -178,8 +178,7 @@ class LinkedListNode {
    * @param {LinkedListNode} [next]
    */
   constructor(value, next = null) {
-    this.value = value
-    this.next = next
+    this.value = value; this.next = next
   }
   toString(fn) { return fn ? fn(this.value) : `${this.value}` }
 }
@@ -202,7 +201,7 @@ class LinkedList {
 
   /** @param {*} value */
   append(value) {
-    let newNode = new LinkedListNode(value)
+    const newNode = new LinkedListNode(value)
     if (!this.head) {
       this.head = newNode; this.tail = newNode
     } else {
@@ -248,7 +247,7 @@ class LinkedList {
     if (this.head === this.tail) { this.head = this.tail = null; return d }
     let c = this.head
     while (c.next) if (!c.next.next) { c.next = null } else c = c.next
-    this.tail = c;    return d
+    this.tail = c; return d
   }
   deleteHead() {
     if (!this.head) return null
@@ -266,7 +265,7 @@ class LinkedList {
 
   /** @return {LinkedListNode[]} */
   toArray() {
-    let n = [], c = this.head; while (c) { n.push(c); c = c.next }; return n
+    const n = [], c = this.head; while (c) { n.push(c); c = c.next }; return n
   }
 
   /**
