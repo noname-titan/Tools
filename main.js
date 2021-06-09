@@ -33,7 +33,7 @@ const is = Object.freeze({
  * @param {iterator} fn
  */
 const each = (arr, fn) => {
-  for (const i = 0; i < arr.length; i++)
+  for (let i = 0; i < arr.length; i++)
     if (fn(arr[i], i) === true) return
 }
 /**
@@ -185,7 +185,7 @@ const _tools_ = Object.freeze({
 class XCore {
   static #self = new XCore()
 
-  #version = "v0.7"
+  #version = "v0.7.1"
   #tools = _tools_
 
   constructor() {
