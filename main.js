@@ -52,7 +52,7 @@ each.obj = (obj, fn) => {
  * @param {{ }} target
  * @param {{ }} obj
  */
-const EXTEND = (target, obj) => each.obj(obj, (x, k) => target[k] = x)
+const EXTEND = (target, obj) => each.obj(obj, (x, k) => { target[k] = x })
 /**
  * @param {new} target
  * @param {{ }} proto
