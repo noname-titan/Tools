@@ -82,7 +82,7 @@ const _listMono = ["Mono"]
 function Mono() {
   if (!is.notClass(this))
     throw new Error("This element is a class. Call 'new'")
-  return Mono.force(new.target.name)
+  return Mono.force(this)
 }
 Mono.has = self => _listMono.includes(self);
 /**
@@ -92,11 +92,11 @@ Mono.has = self => _listMono.includes(self);
  * If the item is in the list returns "false". So it's okay.
  * 
  * Else "True". This means that the item is present in the list.
- * @param {string} self <-- new.target.name
+ * @param {string} self <-- "this"
  */
 Mono.force = self => {
-  const has = Mono.has(self)
-  if (!has) _listMono.push(self)
+  const has = Mono.has(self.constructor.name)
+  if (!has) _listMono.push(self.constructor.name)
   return has
 }
 //#endregion
