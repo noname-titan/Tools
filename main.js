@@ -18,12 +18,18 @@ const is = Object.freeze({
   func: value => is.type(value, "function"),
   num: value => is.type(value, "number"),
   str: value => is.type(value, "string"),
-  obj: value => is.type(value, "object"),
-  empty: value => (value === null || value === undefined),
+  bool: value => is.type(value, "boolean"),
+  obj: value => is.type(value, "object") && !is.null(value),
+
+  empty: value => value === null || value === undefined,
+  null: value => value === null,
+  NaN: value => is.num(value) && isNaN(value),
+
+  nonZeroValue: value => !(is.empty(value) || value === 0 || is.NaN(value)),
 
   array: value => Array.isArray(value),
 
-  notClass: value => (value === globalThis || is.empty(value))
+  notClass: value => value === globalThis || is.empty(value)
 })
 //#endregion
 
@@ -191,7 +197,7 @@ class XCore {
   constructor() {
     if (new.target !== XCore)
       throw new TypeError("Cannot inherit from the XCore class")
-    if (Mono.force(new.target.name))
+    if (Mono.force(this))
       throw new Error("The Kit objects must be in a single instance")
   }
 
