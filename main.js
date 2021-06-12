@@ -192,7 +192,6 @@ class XCore {
   static #self = new XCore()
 
   #version = "v0.7.1"
-  #tools = _tools_
 
   constructor() {
     if (new.target !== XCore)

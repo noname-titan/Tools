@@ -1,12 +1,11 @@
 <body>
     #CODE
-    <script src="./index.js" type="module" defer></script>
+    <script src="./test.js" type="module" defer></script>
     <script>
-        ; (() => {
-            let _ = document.querySelector("body").style
+        ; (_ => {
             _.color = "#fff"; _.background = "#333"; _.height = "100vh"
             _.display = "flex"; _.justifyContent = _.alignItems = "center"
             _.fontSize = "5em"; _.fontFamily = "Roboto"; _.margin = _.padding = "0"
-        })();
+        })(document.body.style);
     </script>
 </body>
