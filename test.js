@@ -1,8 +1,7 @@
-import { XCore, tools, DOM, Algorithm } from "./index.js"
-import "./css.js"
+import { tools, DOM, Algorithm } from "./index.js"
 
 const { is, each, Mono, path, calcRatio } = tools
-const log = console.log, g = console.groupCollapsed, gend = console.groupEnd
+const log = ()=>{}, g = ()=>{}, gend = ()=>{}
 function test(value, target) {
   g(value, target); log("equalsType: " + (typeof value === typeof target), typeof value); log("equals: " + (value === target)); gend()
 }

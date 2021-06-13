@@ -2,14 +2,11 @@ import each from "./each.js"
 import is from "./types.js"
 
 //#region Types
-/**
- * @typedef {HTMLElement | HTMLDivElement | Element |
- * HTMLDocument | Document} docElement
- */
+/** @typedef {HTMLElement | HTMLDivElement | Element} targetElements */
 //#endregion
 
 /**
- * @param {docElement} target
+ * @param {targetElements} target
  * @param {string | string[]} css
  */
 export function add(target, css) {
@@ -17,7 +14,7 @@ export function add(target, css) {
   target.classList.add(css)
 }
 /**
- * @param {docElement} target
+ * @param {targetElements} target
  * @param {string | string[]} css
  */
 export function remove(target, css) {
@@ -25,35 +22,31 @@ export function remove(target, css) {
   target.classList.remove(css)
 }
 /**
- * @param {docElement} target
+ * @param {targetElements} target
  * @param {string} css
  * @returns {boolean}
  */
 export function contains(target, css) { return target.classList.contains(css) }
 /**
- * @param {HTMLDivElement} target
+ * @param {targetElements} target
  * @param {string} css
  */
 export function toggle(target, css) { return target.classList.toggle(css) }
 /**
- * @param {HTMLDivElement} target
+ * @param {targetElements} target
  * @param {string} css
  */
-toggle.each = function toggleEach(target, css) {
+toggle.each = (target, css) => {
   if (is.array(css)) return each(css, z => { target.classList.toggle(z) })
   target.classList.toggle(css)
 }
 /**
- * @param {docElement} target 
+ * @param {targetElements} target 
  * @param {CSSStyleDeclaration} style
  */
-export function styler(target, style) {
-  each.obj(style, (x, y) => target.style[y] = x)
-}
+export function styler(target, style) { each.obj(style, (x, y) => { target.style[y] = x }) }
 /**
- * @param {docElement} target 
+ * @param {HTMLElement | HTMLDivElement} target 
  * @param {CSSStyleDeclaration} style
  */
-styler.set = function stylerSet(target, style) {
-  each.obj(style, (x, y) => target.style.setProperty(y, x))
-}
+styler.set = (target, style) => each.obj(style, (x, y) => target.style.setProperty(y, x))

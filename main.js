@@ -142,7 +142,6 @@ const getJSON = (url, fn) => {
 //#region Calc
 /**
  * @param {HTMLImageElement} img
- * @returns {string}
  */
 const getBase64Image = img => {
   const x = document.createElement("canvas");
@@ -153,7 +152,6 @@ const getBase64Image = img => {
 }
 /**
  * @param {HTMLImageElement} img
- * @returns {string}
  */
 getBase64Image.pro = img => getBase64Image(img).replace(/^data:image\/(png|jpg);base64,/, "")
 /** @type {(a: n, b: n, c: n, d: n) => n} */
@@ -214,8 +212,7 @@ class XCore {
    * @param {string} name
    */
   hasKitWithName(name) {
-    if (is.str(name) && name != "") return !is.empty(XCore.self[name])
-    return false
+    return (is.str(name) && name != "" || !is.empty(XCore.self[name]))
   }
   define(name, kit) {
     if (!is.str(name) && is.empty(kit)) return
