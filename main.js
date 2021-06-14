@@ -86,7 +86,7 @@ const _listMono = ["Mono"]
  * @class
  */
 function Mono() {
-  if (!is.notClass(this))
+  if (is.notClass(this))
     throw new Error("This element is a class. Call 'new'")
   return Mono.force(this)
 }
